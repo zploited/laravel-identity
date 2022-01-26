@@ -1,0 +1,29 @@
+{
+  "name": "zploited/laravel-identity",
+  "description": "Laravel package for protecting API routes with Identity.",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Dennis Nielsen",
+      "email": "dni@zploited.dk"
+    }
+  ],
+  "require": {
+    "php": "^7.0",
+    "laravel/framework": "^8.81"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.24"
+  },
+  "autoload": {
+    "psr-4": {
+      "Zploited\\Laravel\\Identity\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Zploited\\Laravel\\Identity\\Tests": "tests/"
+    }
+  }
+}
