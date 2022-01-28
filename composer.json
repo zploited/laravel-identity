@@ -10,8 +10,12 @@
     }
   ],
   "require": {
-    "php": "^7.0",
-    "laravel/framework": "^8.81"
+    "php": "^7.4|^8.0",
+    "laravel/framework": "^8.81",
+    "lcobucci/jwt": "^4.1",
+    "guzzlehttp/guzzle": "^7.4",
+    "strobotti/php-jwk": "^1.3",
+    "ext-json": "*"
   },
   "require-dev": {
     "orchestra/testbench": "^6.24"
@@ -23,7 +27,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Zploited\\Laravel\\Identity\\Tests": "tests/"
+      "Zploited\\Laravel\\Identity\\Tests\\": "tests/"
     }
   }
 }
