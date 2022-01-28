@@ -29,5 +29,12 @@
     "psr-4": {
       "Zploited\\Laravel\\Identity\\Tests\\": "tests/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Zploited\\Laravel\\Identity\\IdentityServiceProvider"
+      ]
+    }
   }
 }
