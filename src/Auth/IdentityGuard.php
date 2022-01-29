@@ -131,9 +131,15 @@ class IdentityGuard implements Guard
             return null;
         }
 
-        return $this->provider->retrieveById(
+        $user = $this->provider->retrieveById(
             $token->claims()->get('sub')
         );
+
+        if(method_exists($user, 'setScopes')) {
+            $user->setScopes($token->claims()->get('scopes'));
+        }
+
+        return $user;
     }
 
 }

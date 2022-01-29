@@ -5,6 +5,7 @@ namespace Zploited\Laravel\Identity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Zploited\Laravel\Identity\Auth\IdentityGuard;
+use Zploited\Laravel\Identity\Auth\IdentityUserProvider;
 
 class IdentityServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,8 @@ class IdentityServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->registerIdentityUserProvider();
+
         $this->publishes([
             __DIR__.'/../config/identity.php' => config_path('identity.php'),   // configuration
         ]);
@@ -30,6 +33,13 @@ class IdentityServiceProvider extends ServiceProvider
     {
         Auth::extend('identity', function($app, $name, array $config) {
             return new IdentityGuard(Auth::createUserProvider($config['provider']), request());
+        });
+    }
+
+    protected function registerIdentityUserProvider()
+    {
+        Auth::provider('identity', function ($app, array $config) {
+            return new IdentityUserProvider();
         });
     }
 }
