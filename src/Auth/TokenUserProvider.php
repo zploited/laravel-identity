@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Zploited\Laravel\Identity\Identity;
 use Zploited\Laravel\Identity\Models\Token;
 
-class IdentityUserProvider implements UserProvider
+class TokenUserProvider implements UserProvider
 {
 
     public function retrieveById($identifier)

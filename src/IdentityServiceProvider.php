@@ -5,7 +5,7 @@ namespace Zploited\Laravel\Identity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Zploited\Laravel\Identity\Auth\IdentityGuard;
-use Zploited\Laravel\Identity\Auth\IdentityUserProvider;
+use Zploited\Laravel\Identity\Auth\TokenUserProvider;
 
 class IdentityServiceProvider extends ServiceProvider
 {
@@ -38,8 +38,8 @@ class IdentityServiceProvider extends ServiceProvider
 
     protected function registerIdentityUserProvider()
     {
-        Auth::provider('identity', function ($app, array $config) {
-            return new IdentityUserProvider();
+        Auth::provider('token', function ($app, array $config) {
+            return new TokenUserProvider();
         });
     }
 }
