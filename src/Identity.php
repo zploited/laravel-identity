@@ -71,9 +71,9 @@ class Identity
             }
 
             //--    Token issuer (iss, string): The issuing authority inside the token must match the issuing authority (issuer) identified in your Auth0 tenant's discovery document, which exists at https://YOUR_DOMAIN/.well-known/openid-configuration.
-            if (!$secureConfig->validator()->validate($secureToken, new IssuedBy(config('identity.tenant.identifier')))) {
-                throw new AuthenticationException('Incorrect issuing service.');
-            }
+            //if (!$secureConfig->validator()->validate($secureToken, new IssuedBy(config('identity.tenant.identifier')))) {
+            //    throw new AuthenticationException('Incorrect issuing service.');
+            //}
 
             if (!$secureConfig->validator()->validate($secureToken, new PermittedFor(config('identity.client.id')))) {
                 throw new AuthenticationException('Incorrect issuing service.');
