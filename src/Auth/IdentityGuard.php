@@ -6,19 +6,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Lcobucci\Clock;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Key\InMemory;
-use Lcobucci\JWT\Signer\Rsa\Sha256;
-use Lcobucci\JWT\Token\Plain;
-use Lcobucci\JWT\Validation\Constraint\IssuedBy;
-use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
-use Lcobucci\JWT\Validation\Constraint\PermittedFor;
-use Lcobucci\JWT\Validation\Constraint\SignedWith;
-use Strobotti\JWK\KeyConverter;
-use Strobotti\JWK\KeyFactory;
-use Zploited\Laravel\Identity\Exceptions\AuthenticationException;
 use Zploited\Laravel\Identity\Identity;
 
 class IdentityGuard implements Guard
@@ -131,9 +118,7 @@ class IdentityGuard implements Guard
             return null;
         }
 
-        $user = $this->provider->retrieveById(
-            $token->claims()->get('sub')
-        );
+        $user = $this->provider->retrieveById($token);
 
         if(method_exists($user, 'setScopes')) {
             $user->setScopes($token->claims()->get('scopes'));

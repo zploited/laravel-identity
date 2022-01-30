@@ -5,14 +5,14 @@ namespace Zploited\Laravel\Identity\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 use Zploited\Laravel\Identity\Identity;
-use Zploited\Laravel\Identity\Models\Token;
+use Zploited\Laravel\Identity\Models\AccessToken;
 
 class TokenUserProvider implements UserProvider
 {
 
     public function retrieveById($identifier)
     {
-        return new Token($identifier);
+        return new AccessToken($identifier);
     }
 
     public function retrieveByToken($identifier, $token)
