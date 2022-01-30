@@ -85,7 +85,7 @@ class Identity
         return $secureToken;
     }
 
-    public static function publicKeyFromJwksEndpoint(string $kid)
+    public static function publicKeyFromJwksEndpoint(string $kid): ?string
     {
         $endpoint = self::$protocol . config('identity.tenant.identifier') . '/jwks.json';
         $keys = Http::get($endpoint)->json('keys');
@@ -97,6 +97,6 @@ class Identity
             }
         }
 
-        return null;
+        throw new AuthenticationException('The key ID was not found on the endpoint.');
     }
 }
