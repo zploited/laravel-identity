@@ -5,20 +5,18 @@ namespace Zploited\Laravel\Identity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Zploited\Laravel\Identity\Auth\CookieGuard;
-use Zploited\Laravel\Identity\Auth\IdentityGuard;
-use Zploited\Laravel\Identity\Auth\TokenUserProvider;
+use Zploited\Laravel\Identity\Auth\BearerGuard;
 
 class IdentityServiceProvider extends ServiceProvider
 {
     public function register()
     {
         $this->registerIdentityGuard();
+        $this->registerTokenCookieGuard();
     }
 
     public function boot()
     {
-        $this->registerIdentityUserProvider();
-
         $this->publishes([
             __DIR__.'/../config/identity.php' => config_path('identity.php'),   // configuration
         ]);
@@ -32,22 +30,19 @@ class IdentityServiceProvider extends ServiceProvider
      */
     protected function registerIdentityGuard()
     {
-        Auth::extend('identity', function($app, $name, array $config) {
-            return new IdentityGuard(Auth::createUserProvider($config['provider']), request());
+        Auth::extend('bearer', function($app, $name, array $config) {
+            $provider = (isset($config['provider'])) ? Auth::createUserProvider($config['provider'])  : null;
+
+            return new BearerGuard($provider, request());
         });
     }
 
     protected function registerTokenCookieGuard()
     {
         Auth::extend('cookie', function ($app, $name, array $config) {
-            return new CookieGuard(Auth::createUserProvider($config['provider']), 'token');
-        });
-    }
+            $provider = (isset($config['provider'])) ? Auth::createUserProvider($config['provider'])  : null;
 
-    protected function registerIdentityUserProvider()
-    {
-        Auth::provider('token', function ($app, array $config) {
-            return new TokenUserProvider();
+            return new CookieGuard($provider, 'token');
         });
     }
 }

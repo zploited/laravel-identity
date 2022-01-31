@@ -2,18 +2,20 @@
 
 namespace Zploited\Laravel\Identity\Auth;
 
+use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
 use Zploited\Laravel\Identity\Identity;
+use Zploited\Laravel\Identity\Models\BearerToken;
 
-class IdentityGuard implements Guard
+class BearerGuard implements Guard
 {
     /**
-     * @var UserProvider
+     * @var UserProvider|null
      */
-    protected UserProvider $provider;
+    protected ?UserProvider $provider;
 
     /**
      * @var Request
@@ -27,10 +29,10 @@ class IdentityGuard implements Guard
 
     /**
      * Class Constructor
-     * @param UserProvider $provider
+     * @param UserProvider|null $provider
      * @param Request $request
      */
-    public function __construct(UserProvider $provider, Request $request)
+    public function __construct(?UserProvider $provider, Request $request)
     {
         $this->provider = $provider;
         $this->request = $request;
@@ -102,7 +104,7 @@ class IdentityGuard implements Guard
         return  $this->authenticateUsingBearerToken($credentials['token']) !== null;
     }
 
-    public function setUser(Authenticatable $user)
+    public function setUser(Authenticatable $user): Authenticatable
     {
         $this->user = $user;
 
@@ -111,16 +113,30 @@ class IdentityGuard implements Guard
 
     /**
      * Authenticates and validates a jwt token
-     * @param string $token
+     * @param string $bearerToken
      * @return Authenticatable|null
      */
-    protected function authenticateUsingBearerToken(string $token): ?Authenticatable
+    protected function authenticateUsingBearerToken(string $bearerToken): ?Authenticatable
     {
-        if(!$token = Identity::validateAccessToken($token)) {
+        if(!$jwt = Identity::validateAccessToken($bearerToken)) {
             return null;
         }
 
-        return $this->provider->retrieveById($token->claims()->get('sub'));
+        try {
+            if($this->provider === null) {
+                return new BearerToken($bearerToken);
+            }
+        } catch (Exception $exception) {
+            return null;
+        }
+
+
+        $user = $this->provider->retrieveById($jwt->claims()->get('sub'));
+        if(method_exists($user, 'setBearerToken')) {
+            $user->setBearerToken($bearerToken);
+        }
+
+        return $user;
     }
 
 }
