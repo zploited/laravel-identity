@@ -8,34 +8,52 @@ use Lcobucci\JWT\Token\Plain;
 
 class AccessToken implements Authenticatable
 {
-    protected ?string $bearerToken;
-    protected Plain $token;
+    protected $sub;
+    protected ?string $bearerToken = null;
+    protected ?Plain $token = null;
 
-    public function __construct(string $bearerToken)
+    public function __construct($identifier, string $bearerToken = null)
     {
+        $this->sub = $identifier;
         $this->bearerToken = $bearerToken;
 
-        $config = Configuration::forUnsecuredSigner();
-        $this->token = $config->parser()->parse($bearerToken);
+        if($bearerToken !== null) {
+            try {
+                $config = Configuration::forUnsecuredSigner();
+                $this->token = $config->parser()->parse($bearerToken);
+
+                if($identifier !== $this->token->claims()->get('sub')) {
+                    $this->token = null;
+                }
+            } catch (\Exception $ex) {}
+        }
     }
 
     public function __get($property)
     {
-        try {
-            return $this->token->claims()->get($property);
-        } catch (\Exception $exception) {
-            return null;
+        if($property === 'sub' && $this->token === null) {
+            return $this->sub;
         }
+
+        if($this->token !== null) {
+            try {
+                return $this->token->claims()->get($property);
+            } catch (\Exception $exception) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     public function getAuthIdentifierName()
     {
-        return 'sub';
+        return 'identifier';
     }
 
     public function getAuthIdentifier()
     {
-        return $this->sub;
+        return $this->identifier;
     }
 
     public function getAuthPassword()
@@ -56,5 +74,10 @@ class AccessToken implements Authenticatable
     public function getRememberTokenName()
     {
         return null;
+    }
+
+    public function getBearerToken(): ?string
+    {
+        return $this->bearerToken;
     }
 }

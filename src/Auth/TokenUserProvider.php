@@ -11,12 +11,7 @@ class TokenUserProvider implements UserProvider
 {
     public function retrieveById($identifier)
     {
-        $token = new AccessToken(request()->bearerToken());
-        if($identifier === $token->sub) {
-            return $token;
-        }
-
-        return null;
+        return new AccessToken($identifier, request()->bearerToken());
     }
 
     public function retrieveByToken($identifier, $token)
