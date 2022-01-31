@@ -8,15 +8,15 @@ use Lcobucci\JWT\Token\Plain;
 
 class AccessToken implements Authenticatable
 {
-    public string $jwt;
+    protected ?string $bearerToken;
     protected Plain $token;
 
-    public function __construct($token)
+    public function __construct(string $bearerToken)
     {
-        $this->jwt = $token;
+        $this->bearerToken = $bearerToken;
 
         $config = Configuration::forUnsecuredSigner();
-        $this->token = $config->parser()->parse($token);
+        $this->token = $config->parser()->parse($bearerToken);
     }
 
     public function __get($property)
@@ -30,12 +30,12 @@ class AccessToken implements Authenticatable
 
     public function getAuthIdentifierName()
     {
-        return 'jwt';
+        return 'sub';
     }
 
     public function getAuthIdentifier()
     {
-        return $this->jwt;
+        return $this->sub;
     }
 
     public function getAuthPassword()

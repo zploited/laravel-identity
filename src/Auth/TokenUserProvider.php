@@ -9,10 +9,21 @@ use Zploited\Laravel\Identity\Models\AccessToken;
 
 class TokenUserProvider implements UserProvider
 {
+    protected ?string $bearerToken;
+
+    public function __construct(?string $bearerToken)
+    {
+        $this->bearerToken = $bearerToken;
+    }
 
     public function retrieveById($identifier)
     {
-        return new AccessToken($identifier);
+        $token = new AccessToken($this->bearerToken);
+        if($identifier === $token->sub) {
+            return $token;
+        }
+
+        return null;
     }
 
     public function retrieveByToken($identifier, $token)
@@ -27,7 +38,7 @@ class TokenUserProvider implements UserProvider
 
     public function retrieveByCredentials(array $credentials)
     {
-
+        return null;
     }
 
     public function validateCredentials(Authenticatable $user, array $credentials)
