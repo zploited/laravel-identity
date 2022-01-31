@@ -4,6 +4,7 @@ namespace Zploited\Laravel\Identity;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Zploited\Laravel\Identity\Auth\CookieGuard;
 use Zploited\Laravel\Identity\Auth\IdentityGuard;
 use Zploited\Laravel\Identity\Auth\TokenUserProvider;
 
@@ -33,6 +34,13 @@ class IdentityServiceProvider extends ServiceProvider
     {
         Auth::extend('identity', function($app, $name, array $config) {
             return new IdentityGuard(Auth::createUserProvider($config['provider']), request());
+        });
+    }
+
+    protected function registerTokenCookieGuard()
+    {
+        Auth::extend('cookie', function ($app, $name, array $config) {
+            return new CookieGuard(Auth::createUserProvider($config['provider']), 'token');
         });
     }
 

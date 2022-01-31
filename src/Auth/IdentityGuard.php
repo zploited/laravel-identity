@@ -60,16 +60,18 @@ class IdentityGuard implements Guard
      */
     public function user(): ?Authenticatable
     {
+        if($this->user !== null) {
+            return $this->user;
+        }
+
         $token = $this->request->bearerToken();
         if($token === null) {
             return null;
         }
 
-        $user = $this->authenticateUsingBearerToken($token);
+        $this->user = $this->authenticateUsingBearerToken($token);
 
-        $this->user = $user;
-
-        return $user;
+        return $this->user;
     }
 
     /**
@@ -118,13 +120,7 @@ class IdentityGuard implements Guard
             return null;
         }
 
-        $user = $this->provider->retrieveById($token->claims()->get('sub'));
-
-        if(method_exists($user, 'setScopes')) {
-            $user->setScopes($token->claims()->get('scopes'));
-        }
-
-        return $user;
+        return $this->provider->retrieveById($token->claims()->get('sub'));
     }
 
 }
