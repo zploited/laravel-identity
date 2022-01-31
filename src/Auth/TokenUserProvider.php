@@ -9,16 +9,9 @@ use Zploited\Laravel\Identity\Models\AccessToken;
 
 class TokenUserProvider implements UserProvider
 {
-    protected ?string $bearerToken;
-
-    public function __construct(?string $bearerToken)
-    {
-        $this->bearerToken = $bearerToken;
-    }
-
     public function retrieveById($identifier)
     {
-        $token = new AccessToken($this->bearerToken);
+        $token = new AccessToken(request()->bearerToken());
         if($identifier === $token->sub) {
             return $token;
         }

@@ -39,7 +39,7 @@ class IdentityServiceProvider extends ServiceProvider
     protected function registerIdentityUserProvider()
     {
         Auth::provider('token', function ($app, array $config) {
-            return new TokenUserProvider(request()->bearerToken());
+            return new TokenUserProvider();
         });
     }
 }
