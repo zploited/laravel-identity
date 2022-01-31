@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Support\Facades\Cookie;
+use Lcobucci\JWT\Configuration;
 use Zploited\Laravel\Identity\Identity;
 use Zploited\Laravel\Identity\Models\BearerToken;
 
@@ -50,20 +51,16 @@ class CookieGuard implements Guard
             return null;
         }
 
-        try {
-            if($this->provider === null) {
-                $this->user = new BearerToken($bearerToken);
+        if($this->provider === null) {
+            $this->user = new BearerToken($bearerToken);
+        } else {
+            $user = $this->provider->retrieveById($jwt->claims()->get('sub'));
+            if(method_exists($user, 'setBearerToken')) {
+                $user->setBearerToken($bearerToken);
             }
-        } catch (Exception $exception) {
-            return null;
-        }
 
-        $user = $this->provider->retrieveById($jwt->claims()->get('sub'));
-        if(method_exists($user, 'setBearerToken')) {
-            $user->setBearerToken($bearerToken);
+            $this->user = $user;
         }
-
-        $this->user = $user;
 
         return $this->user;
     }
@@ -91,13 +88,23 @@ class CookieGuard implements Guard
         return Identity::validateAccessToken($bearerToken) !== null;
     }
 
+    /**
+     * @param Authenticatable $user
+     * @return void
+     */
     public function setUser(Authenticatable $user)
     {
-        if($user instanceof BearerToken) {
-            $this->user = $user;
-
-            Cookie::queue($this->cookieName, $user->getBearerToken());
+        if(!$user instanceof BearerToken) {
+            $config = Configuration::forUnsecuredSigner();
+            $exp = ($config->parser()->parse($user->getBearerToken()))->claims()->get('exp');
+        } else {
+            $exp = $user->exp->getTimestamp();
         }
+
+        $expires = $exp - now()->getTimestamp();
+
+        Cookie::queue($this->cookieName, $user->getBearerToken(), ($expires / 60));
+        $this->user = $user;
     }
 
     public function login(Authenticatable $user)

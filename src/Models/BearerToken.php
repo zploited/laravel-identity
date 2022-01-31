@@ -2,6 +2,7 @@
 
 namespace Zploited\Laravel\Identity\Models;
 
+use DateTimeImmutable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token\Plain;
@@ -10,6 +11,7 @@ use Zploited\Laravel\Identity\Exceptions\AuthenticationException;
 /**
  * Represents a JWT formed bearer token
  * @property-read string $sub Unique identifier of the user this token is valid for
+ * @property-read DateTimeImmutable $exp When the token expires
  */
 class BearerToken implements Authenticatable
 {
