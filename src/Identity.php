@@ -18,11 +18,11 @@ use Zploited\Laravel\Identity\Exceptions\AuthenticationException;
 
 class Identity
 {
-    static $protocol = 'http://';
+    static string $protocol = 'http://';
 
     public static function validateAccessToken($token): ?Plain
     {
-        try {
+
             //TODO: Check JWT is well formed
             //- Verify that the JWT contains three segments, separated by two period ('.') characters.
             if (count(explode('.', $token)) !== 3) {
@@ -78,9 +78,6 @@ class Identity
             if (!$secureConfig->validator()->validate($secureToken, new PermittedFor(config('identity.client.id')))) {
                 throw new AuthenticationException('Incorrect issuing service.');
             }
-        } catch (AuthenticationException $authenticationException) {
-            return null;
-        }
 
         return $secureToken;
     }
@@ -97,6 +94,6 @@ class Identity
             }
         }
 
-        throw new AuthenticationException('The key ID was not found on the endpoint.');
+        throw new AuthenticationException('No matching keys in jwks. Unable to verify integrity of the token.');
     }
 }

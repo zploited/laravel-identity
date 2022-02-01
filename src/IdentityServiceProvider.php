@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Zploited\Laravel\Identity\Auth\CookieGuard;
 use Zploited\Laravel\Identity\Auth\BearerGuard;
+use Zploited\Laravel\Identity\Exceptions\IdentityExceptionHandler;
 
 class IdentityServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,8 @@ class IdentityServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->app->bind(IdentityExceptionHandler::class);
+
         $this->publishes([
             __DIR__.'/../config/identity.php' => config_path('identity.php'),   // configuration
         ]);

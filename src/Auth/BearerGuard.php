@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
+use Zploited\Laravel\Identity\Exceptions\AuthenticationException;
 use Zploited\Laravel\Identity\Identity;
 use Zploited\Laravel\Identity\Models\BearerToken;
 
@@ -126,12 +127,12 @@ class BearerGuard implements Guard
             try {
                 $user = new BearerToken($bearerToken);
             } catch (Exception $exception) {
-                abort(401, 'Unable to parse the provided bearer token.');
+                throw new AuthenticationException('Unable to parse the provided bearer token.');
             }
         } else {
             $user = $this->provider->retrieveById($jwt->claims()->get('sub'));
             if($user === null) {
-                abort(401, 'Provided bearer token does not match a user.');
+                throw new AuthenticationException('Provided bearer token does not match a user.');
             }
 
             if(method_exists($user, 'setBearerToken')) {
