@@ -122,18 +122,17 @@ class BearerGuard implements Guard
             return null;
         }
 
-        try {
-            if($this->provider === null) {
-                return new BearerToken($bearerToken);
+        if($this->provider === null) {
+            try {
+                $user = new BearerToken($bearerToken);
+            } catch (Exception $exception) {
+                abort(400, 'Unable to parse the provided bearer token.');
             }
-        } catch (Exception $exception) {
-            return null;
-        }
-
-
-        $user = $this->provider->retrieveById($jwt->claims()->get('sub'));
-        if(method_exists($user, 'setBearerToken')) {
-            $user->setBearerToken($bearerToken);
+        } else {
+            $user = $this->provider->retrieveById($jwt->claims()->get('sub'));
+            if(method_exists($user, 'setBearerToken')) {
+                $user->setBearerToken($bearerToken);
+            }
         }
 
         return $user;
