@@ -126,10 +126,14 @@ class BearerGuard implements Guard
             try {
                 $user = new BearerToken($bearerToken);
             } catch (Exception $exception) {
-                abort(400, 'Unable to parse the provided bearer token.');
+                abort(401, 'Unable to parse the provided bearer token.');
             }
         } else {
             $user = $this->provider->retrieveById($jwt->claims()->get('sub'));
+            if($user === null) {
+                abort(401, 'Provided bearer token does not match a user.');
+            }
+
             if(method_exists($user, 'setBearerToken')) {
                 $user->setBearerToken($bearerToken);
             }
