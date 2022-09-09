@@ -1,5 +1,7 @@
 {
   "name": "zploited/laravel-identity",
+  "description": "Identity client for Laravel, simplifying the authentication flows towards your Identity tenant.",
+  "license": "MIT",
   "authors": [
     {
       "name": "Dennis Nielsen",
@@ -15,6 +17,21 @@
   "autoload-dev": {
     "psr-4": {
       "Zploited\\Identity\\Client\\Laravel\\Tests\\": "./tests"
+    }
+  },
+  "require": {
+    "PHP": "^7.1|^8.0",
+    "laravel/framework": "^9.29",
+    "zploited/php-identity": "dev-main"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^7.7"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Zploited\\Identity\\Client\\Laravel\\IdentityServiceProvider"
+      ]
     }
   }
 }
