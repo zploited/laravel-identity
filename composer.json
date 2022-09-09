@@ -1,0 +1,20 @@
+{
+  "name": "zploited/laravel-identity",
+  "authors": [
+    {
+      "name": "Dennis Nielsen",
+      "email": "dni@zploited.dk",
+      "homepage": "https://www.zploited.dk"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Zploited\\Identity\\Client\\Laravel\\": "./src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Zploited\\Identity\\Client\\Laravel\\Tests\\": "./tests"
+    }
+  }
+}
