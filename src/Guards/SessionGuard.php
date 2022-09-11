@@ -82,4 +82,10 @@ class SessionGuard implements Guard
             $this->user = $user;
         }
     }
+
+    public function logout(): void
+    {
+        Session::remove($this->sessionName);
+        $this->user = null;
+    }
 }
