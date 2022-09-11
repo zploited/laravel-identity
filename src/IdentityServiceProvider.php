@@ -2,8 +2,10 @@
 
 namespace Zploited\Identity\Client\Laravel;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Zploited\Identity\Client\Identity;
+use Zploited\Identity\Client\Laravel\Guards\SessionGuard;
 
 class IdentityServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,11 @@ class IdentityServiceProvider extends ServiceProvider
         // Binding the identity object into a singleton
         $this->app->singleton(Identity::class, function() {
             return new Identity(config('identity-client.identity'));
+        });
+
+        // Registers the Session Guard
+        Auth::extend('identity:session', function($app, $name, array $config) {
+            return new SessionGuard(null, '_identity');
         });
     }
 }
