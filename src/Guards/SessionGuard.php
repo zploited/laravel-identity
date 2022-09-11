@@ -46,9 +46,14 @@ class SessionGuard implements Guard
          * Gets the token from a cookie and stores the token locally
          * if this cookie isn't set it means none is logged in, and we can return null
          */
-        /** @var Token|null $token */
-        $token = unserialize(Session::get($this->sessionName));
+        /** @var string|null $serializedToken */
+        $serializedToken = Session::get($this->sessionName);
+        if($serializedToken === null) {
+            return null;
+        }
 
+        /** @var Token $token */
+        $token = unserialize($serializedToken);
         $this->user = $token;
 
         return $token;
