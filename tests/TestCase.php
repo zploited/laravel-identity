@@ -5,7 +5,7 @@ use Zploited\Identity\Client\Laravel\IdentityServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
-    protected function getApplicationProviders(): array
+    protected function getApplicationProviders($app): array
     {
         return [
             IdentityServiceProvider::class
