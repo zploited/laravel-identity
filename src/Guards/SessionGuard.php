@@ -6,13 +6,14 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Support\Facades\Session;
+use Zploited\Identity\Client\Exceptions\IdentityCoreException;
 use Zploited\Identity\Client\Laravel\Models\Token;
 
 class SessionGuard implements Guard
 {
     protected ?UserProvider $provider = null;
 
-    protected ?Authenticatable $user = null;
+    protected ?Authenticatable $token = null;
 
     protected string $sessionName;
 
@@ -32,14 +33,17 @@ class SessionGuard implements Guard
         return !$this->check();
     }
 
+    /**
+     * @throws IdentityCoreException
+     */
     public function user(): Authenticatable|null
     {
         /*
          * Checking if the user has already been set,
          * if he is we can just return the user
          */
-        if($this->user !== null) {
-            return $this->user;
+        if($this->token !== null) {
+            return $this->token;
         }
 
         /*
@@ -47,14 +51,13 @@ class SessionGuard implements Guard
          * if this cookie isn't set it means none is logged in, and we can return null
          */
         /** @var string|null $serializedToken */
-        $serializedToken = Session::get($this->sessionName);
-        if($serializedToken === null) {
+        $jwt = Session::get($this->sessionName);
+        if($jwt === null) {
             return null;
         }
 
-        /** @var Token $token */
-        $token = unserialize($serializedToken);
-        $this->user = $token;
+        $token = new Token($jwt);
+        $this->token = $token;
 
         return $token;
     }
@@ -77,15 +80,15 @@ class SessionGuard implements Guard
     public function setUser(Authenticatable $user)
     {
         if($user instanceof Token) {
-            Session::put($this->sessionName, serialize($user));
+            Session::put($this->sessionName, $user->getJwtString());
 
-            $this->user = $user;
+            $this->token = $user;
         }
     }
 
     public function logout(): void
     {
         Session::remove($this->sessionName);
-        $this->user = null;
+        $this->token = null;
     }
 }
