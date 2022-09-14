@@ -5,6 +5,7 @@ namespace Zploited\Identity\Client\Laravel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Zploited\Identity\Client\Identity;
+use Zploited\Identity\Client\Laravel\Guards\BearerGuard;
 use Zploited\Identity\Client\Laravel\Guards\SessionGuard;
 
 class IdentityServiceProvider extends ServiceProvider
@@ -28,6 +29,11 @@ class IdentityServiceProvider extends ServiceProvider
         // Registers the Session Guard
         Auth::extend('identity:session', function($app, $name, array $config) {
             return new SessionGuard(null, '_identity');
+        });
+
+        // Registers the Bearer Guard
+        Auth::extend('identity:bearer', function($app, $name, array $config) {
+            return new BearerGuard(null);
         });
     }
 }
