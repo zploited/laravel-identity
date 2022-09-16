@@ -31,8 +31,9 @@ class IdentityServiceProvider extends ServiceProvider
             return new SessionGuard(
                 null,
                 '_identity',
-                config('identity-client.guard.issuer'),
-                config('identity-client.guard.client_id')
+                config('identity-client.guard.client_id'),
+                config('identity-client.guard.issuer')
+
             );
         });
 
@@ -40,8 +41,8 @@ class IdentityServiceProvider extends ServiceProvider
         Auth::extend('identity:bearer', function($app, $name, array $config) {
             return new BearerGuard(
                 null,
-                config('identity-client.guard.issuer'),
-                config('identity-client.guard.client_id')
+                config('identity-client.guard.client_id'),
+                config('identity-client.guard.issuer')
             );
         });
     }
