@@ -5398,12 +5398,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zploited/php-identity.git",
-                "reference": "4d1a26ff2c9b0bb20d3632bf8f0be8d90722b8de"
+                "reference": "bc3d9d7c5302120ca2f6a923ef8896351be78418"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zploited/php-identity/zipball/4d1a26ff2c9b0bb20d3632bf8f0be8d90722b8de",
-                "reference": "4d1a26ff2c9b0bb20d3632bf8f0be8d90722b8de",
+                "url": "https://api.github.com/repos/zploited/php-identity/zipball/bc3d9d7c5302120ca2f6a923ef8896351be78418",
+                "reference": "bc3d9d7c5302120ca2f6a923ef8896351be78418",
                 "shasum": ""
             },
             "require": {
@@ -5440,7 +5440,7 @@
                 "issues": "https://github.com/zploited/php-identity/issues",
                 "source": "https://github.com/zploited/php-identity/tree/main"
             },
-            "time": "2022-09-16T19:07:52+00:00"
+            "time": "2022-09-16T20:01:49+00:00"
         }
     ],
     "packages-dev": [
