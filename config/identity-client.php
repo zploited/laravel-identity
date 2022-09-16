@@ -6,5 +6,9 @@ return [
         'client_secret' => env('IDENTITY_CLIENT_SECRET'),
         'redirect_uri' => env('IDENTITY_REDIRECT_URI'),
         'scopes' => explode(' ', env('IDENTITY_SCOPE'))
+    ],
+    'guard' => [
+        'issuer' => env('IDENTITY_IDENTIFIER'),
+        'client_id' => env('IDENTITY_CLIENT_ID')
     ]
 ];
