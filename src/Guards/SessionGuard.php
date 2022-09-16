@@ -7,7 +7,9 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Support\Facades\Session;
 use Zploited\Identity\Client\Exceptions\IdentityCoreException;
+use Zploited\Identity\Client\Exceptions\IdentityValidationException;
 use Zploited\Identity\Client\Laravel\Models\Token;
+use Zploited\Identity\Client\Validator;
 
 class SessionGuard implements Guard
 {
@@ -17,10 +19,16 @@ class SessionGuard implements Guard
 
     protected string $sessionName;
 
-    public function __construct(?UserProvider $provider, string $name)
+    protected string $issuer;
+
+    protected string $clientId;
+
+    public function __construct(?UserProvider $provider, string $name, string $clientId, string $issuer)
     {
         $this->provider = $provider;
         $this->sessionName = $name;
+        $this->issuer = $issuer;
+        $this->clientId = $clientId;
     }
 
     public function check(): bool
@@ -57,6 +65,24 @@ class SessionGuard implements Guard
         }
 
         $token = new Token($jwt);
+
+        /*
+         * We need to validate the token before saving it!
+         * We will use the identity validator for that...
+         */
+        $validator = new Validator($this->issuer, $this->clientId);
+        try {
+
+            $validator->validateToken($token);
+
+        } catch (IdentityValidationException $validationException) {
+            return null;
+        }
+
+        /*
+         * Everything seems fine...
+         * Lets store and return it
+         */
         $this->token = $token;
 
         return $token;
