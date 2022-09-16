@@ -8,7 +8,6 @@ return [
         'scopes' => explode(' ', env('IDENTITY_SCOPE'))
     ],
     'guard' => [
-        'issuer' => env('IDENTITY_IDENTIFIER'),
-        'client_id' => env('IDENTITY_CLIENT_ID')
+        'issuer' => env('IDENTITY_IDENTIFIER')
     ]
 ];

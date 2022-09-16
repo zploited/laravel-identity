@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Zploited\Identity\Client\Exceptions\IdentityCoreException;
 use Zploited\Identity\Client\Exceptions\IdentityValidationException;
+use Zploited\Identity\Client\Laravel\Events\TokenValidationFailed;
 use Zploited\Identity\Client\Laravel\Models\Token;
 use Zploited\Identity\Client\Validator;
 
@@ -18,13 +19,10 @@ class BearerGuard implements Guard
 
     protected string $issuer;
 
-    protected string $clientId;
-
-    public function __construct(?UserProvider $provider, string $clientId, string $issuer)
+    public function __construct(?UserProvider $provider, string $issuer)
     {
         $this->provider = $provider;
         $this->issuer = $issuer;
-        $this->clientId = $clientId;
     }
 
     public function check(): bool
@@ -57,12 +55,14 @@ class BearerGuard implements Guard
          * We need to validate the token before saving it!
          * We will use the identity validator for that...
          */
-        $validator = new Validator($this->issuer, $this->clientId);
+        $validator = new Validator($this->issuer);
         try {
 
             $validator->validateToken($token);
 
         } catch (IdentityValidationException $validationException) {
+
+            TokenValidationFailed::dispatch($token, $validationException->getMessage());
             return null;
         }
 
