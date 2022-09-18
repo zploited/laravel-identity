@@ -1515,16 +1515,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.4.0",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "5972d2a966e236674286e3a2281139ce74e4415d"
+                "reference": "b7bb46dee497b57e0c378315f2a711824cb46c38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/5972d2a966e236674286e3a2281139ce74e4415d",
-                "reference": "5972d2a966e236674286e3a2281139ce74e4415d",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/b7bb46dee497b57e0c378315f2a711824cb46c38",
+                "reference": "b7bb46dee497b57e0c378315f2a711824cb46c38",
                 "shasum": ""
             },
             "require": {
@@ -1586,7 +1586,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.4.0"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.5.0"
             },
             "funding": [
                 {
@@ -1602,7 +1602,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-09-16T20:57:23+00:00"
+            "time": "2022-09-17T21:06:02+00:00"
         },
         {
             "name": "league/mime-type-detection",
@@ -5398,12 +5398,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zploited/php-identity.git",
-                "reference": "c959291e39ce19fe5946f374d9f7e6bf2dd6cc74"
+                "reference": "135aa177aef7bb1793411c51f887d584fc946664"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zploited/php-identity/zipball/c959291e39ce19fe5946f374d9f7e6bf2dd6cc74",
-                "reference": "c959291e39ce19fe5946f374d9f7e6bf2dd6cc74",
+                "url": "https://api.github.com/repos/zploited/php-identity/zipball/135aa177aef7bb1793411c51f887d584fc946664",
+                "reference": "135aa177aef7bb1793411c51f887d584fc946664",
                 "shasum": ""
             },
             "require": {
@@ -5440,7 +5440,7 @@
                 "issues": "https://github.com/zploited/php-identity/issues",
                 "source": "https://github.com/zploited/php-identity/tree/main"
             },
-            "time": "2022-09-16T23:30:51+00:00"
+            "time": "2022-09-18T15:08:35+00:00"
         }
     ],
     "packages-dev": [
