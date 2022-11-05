@@ -5,9 +5,11 @@ namespace Zploited\Identity\Client\Laravel\Guards;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Session;
 use Zploited\Identity\Client\Exceptions\IdentityCoreException;
 use Zploited\Identity\Client\Exceptions\IdentityValidationException;
+use Zploited\Identity\Client\Identity;
 use Zploited\Identity\Client\Laravel\Events\TokenValidationFailed;
 use Zploited\Identity\Client\Laravel\Models\Token;
 use Zploited\Identity\Client\Validator;
@@ -40,7 +42,7 @@ class SessionGuard implements Guard
     }
 
     /**
-     * @throws IdentityCoreException
+     * @throws IdentityCoreException|BindingResolutionException
      */
     public function user(): Authenticatable|null
     {
@@ -52,23 +54,21 @@ class SessionGuard implements Guard
             return $this->token;
         }
 
-        /*
-         * Gets the token from a cookie and stores the token locally
-         * if this cookie isn't set it means none is logged in, and we can return null
-         */
-        /** @var string|null $serializedToken */
-        $jwt = Session::get($this->sessionName);
-        if($jwt === null) {
+        /** @var Identity $identity */
+        $identity = app()->make(Identity::class);
+        if(!$identity->accessToken()) {
             return null;
         }
 
-        $token = new Token($jwt);
+        /** @var \Zploited\Identity\Client\Token $origin */
+        $origin = $identity->accessToken();
+        $token = new Token($origin->getJwtString());
 
         /*
          * We need to validate the token before saving it!
          * We will use the identity validator for that...
          */
-        $validator = new Validator($this->issuer);
+        $validator = new Validator($this->issuer, null, config('identity-client.identity.protocol'));
         try {
 
             $validator->validateToken($token);
