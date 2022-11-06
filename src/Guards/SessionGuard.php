@@ -2,40 +2,43 @@
 
 namespace Zploited\Identity\Client\Laravel\Guards;
 
+use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Session;
 use Zploited\Identity\Client\Exceptions\IdentityCoreException;
 use Zploited\Identity\Client\Exceptions\IdentityValidationException;
 use Zploited\Identity\Client\Identity;
 use Zploited\Identity\Client\Laravel\Events\TokenValidationFailed;
-use Zploited\Identity\Client\Laravel\Models\Token;
+use Zploited\Identity\Client\Laravel\Models\AccessToken;
 use Zploited\Identity\Client\Validator;
 
 class SessionGuard implements Guard
 {
-    protected ?UserProvider $provider = null;
-
     protected ?Authenticatable $token = null;
-
     protected string $sessionName;
-
     protected string $issuer;
 
-    public function __construct(?UserProvider $provider, string $name, string $issuer)
+    public function __construct(string $name, string $issuer)
     {
-        $this->provider = $provider;
         $this->sessionName = $name;
         $this->issuer = $issuer;
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws IdentityCoreException
+     */
     public function check(): bool
     {
         return $this->user() !== null;
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws IdentityCoreException
+     */
     public function guest(): bool
     {
         return !$this->check();
@@ -43,6 +46,7 @@ class SessionGuard implements Guard
 
     /**
      * @throws IdentityCoreException|BindingResolutionException
+     * @throws Exception
      */
     public function user(): Authenticatable|null
     {
@@ -60,9 +64,9 @@ class SessionGuard implements Guard
             return null;
         }
 
-        /** @var \Zploited\Identity\Client\Token $origin */
+        /** @var AccessToken $origin */
         $origin = $identity->accessToken();
-        $token = new Token($origin->getJwtString());
+        $token = AccessToken::fromBase($origin);
 
         /*
          * We need to validate the token before saving it!
@@ -87,6 +91,10 @@ class SessionGuard implements Guard
         return $token;
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws IdentityCoreException
+     */
     public function id()
     {
         return ($this->user()) ? $this->user()->getAuthIdentifier() : null;
@@ -97,18 +105,18 @@ class SessionGuard implements Guard
         return false;
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws IdentityCoreException
+     */
     public function hasUser(): bool
     {
         return $this->user() !== null;
     }
 
-    public function setUser(Authenticatable $user)
+    public function setUser(AccessToken|Authenticatable $user)
     {
-        if($user instanceof Token) {
-            Session::put($this->sessionName, $user->getJwtString());
-
-            $this->token = $user;
-        }
+        return;
     }
 
     public function logout(): void

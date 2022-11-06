@@ -5,9 +5,9 @@ namespace Zploited\Identity\Client\Laravel\Models;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class Token extends \Zploited\Identity\Client\Token implements Authenticatable
+class AccessToken extends \Zploited\Identity\Client\Models\AccessToken implements Authenticatable
 {
-    public function getAuthIdentifierName()
+    public function getAuthIdentifierName(): string
     {
         return 'sub';
     }
@@ -38,12 +38,12 @@ class Token extends \Zploited\Identity\Client\Token implements Authenticatable
     }
 
     /**
-     * Creates an object of this type based off the original Token class
+     * Creates an object of this type based off the original AccessToken class
      *
      * @throws Exception
      */
-    public static function fromBase(\Zploited\Identity\Client\Token $token): Token
+    public static function fromBase(AccessToken $token): AccessToken
     {
-        return new self($token->getJwtString());
+        return new self((string)$token);
     }
 }

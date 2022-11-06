@@ -4,24 +4,19 @@ namespace Zploited\Identity\Client\Laravel\Guards;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Contracts\Auth\UserProvider;
 use Zploited\Identity\Client\Exceptions\IdentityCoreException;
 use Zploited\Identity\Client\Exceptions\IdentityValidationException;
 use Zploited\Identity\Client\Laravel\Events\TokenValidationFailed;
-use Zploited\Identity\Client\Laravel\Models\Token;
+use Zploited\Identity\Client\Laravel\Models\AccessToken;
 use Zploited\Identity\Client\Validator;
 
 class BearerGuard implements Guard
 {
-    protected ?UserProvider $provider = null;
-
-    protected ?Authenticatable $token = null;
-
+    protected ?AccessToken $token = null;
     protected string $issuer;
 
-    public function __construct(?UserProvider $provider, string $issuer)
+    public function __construct(string $issuer)
     {
-        $this->provider = $provider;
         $this->issuer = $issuer;
     }
 
@@ -38,7 +33,7 @@ class BearerGuard implements Guard
     /**
      * @throws IdentityCoreException
      */
-    public function user(): Authenticatable|null
+    public function user(): AccessToken|null
     {
         if($this->token !== null) {
             return $this->token;
@@ -49,7 +44,7 @@ class BearerGuard implements Guard
             return null;
         }
 
-        $token = new Token($jwt);
+        $token = new AccessToken($jwt);
 
         /*
          * We need to validate the token before saving it!
@@ -75,6 +70,9 @@ class BearerGuard implements Guard
         return $token;
     }
 
+    /**
+     * @throws IdentityCoreException
+     */
     public function id()
     {
         return ($this->user()) ? $this->user()->getAuthIdentifier() : null;
@@ -85,6 +83,9 @@ class BearerGuard implements Guard
         return false;
     }
 
+    /**
+     * @throws IdentityCoreException
+     */
     public function hasUser(): bool
     {
         return $this->user() !== null;
