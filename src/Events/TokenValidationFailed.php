@@ -9,21 +9,21 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Zploited\Identity\Client\Interfaces\TokenInterface;
+use Zploited\Identity\Client\Models\AccessToken;
 
 class TokenValidationFailed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public string $error;
-    public TokenInterface $token;
+    public AccessToken $token;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(TokenInterface $token, string $error)
+    public function __construct(AccessToken $token, string $error)
     {
         $this->token = $token;
         $this->error = $error;
