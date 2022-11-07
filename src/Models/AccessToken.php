@@ -42,7 +42,7 @@ class AccessToken extends \Zploited\Identity\Client\Models\AccessToken implement
      *
      * @throws Exception
      */
-    public static function fromBase(AccessToken $token): AccessToken
+    public static function fromBase(\Zploited\Identity\Client\Models\AccessToken $token): AccessToken
     {
         return new self((string)$token);
     }
