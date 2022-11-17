@@ -23,7 +23,7 @@ class IdentityServiceProvider extends ServiceProvider
 
         // Binding the identity object into a singleton
         $this->app->singleton(Identity::class, function() {
-            return new Identity(config('identity-client.identity'));
+            return new Identity(array_merge(config('identity-client.identity'), ['state' => csrf_token()]));
         });
 
         // Registers the Session Guard
